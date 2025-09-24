@@ -9,8 +9,6 @@ namespace InventoryManager.services
         string filePath = "task.json";
 
 
-
-
         public List<Product> LoadInventory(string filePath)
         {
             if (File.Exists(filePath))
