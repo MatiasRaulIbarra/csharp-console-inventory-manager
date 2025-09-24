@@ -5,10 +5,17 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        IIinventoryService _inventoryService = new InventoryService();
+        int shouldExit = 0;
+        string filePath = "inventory.json";
+        IFileHandlerService _fileHandlerService = new FileHandlerService();
+        List<Product> allProducts = _fileHandlerService.LoadInventory(filePath);
+        IIinventoryService _inventoryService = new InventoryService(allProducts);
+       
 
 
-        while (true)
+
+
+        while (shouldExit != 5)
         {
             string name;
             string price;
@@ -133,10 +140,17 @@ internal class Program
                         Console.WriteLine("The product was deleted successfully.");
                         Console.ReadKey();
                         break;
+                    case 5:
+                        List<Product> currentProducts = _inventoryService.GetProducts();
+                        _fileHandlerService.SaveInventory(currentProducts, filePath);
+                        Console.WriteLine("Inventory saved.Exiting application.");
+                        shouldExit = 5;
+                        break;
+
 
                     default:
                         Console.WriteLine("Invalid option. Please try again");
-                        Console.ReadKey(true);
+                        Console.ReadKey();
                         break;
 
                 }

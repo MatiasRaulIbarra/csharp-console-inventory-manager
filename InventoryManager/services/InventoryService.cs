@@ -6,9 +6,9 @@ namespace InventoryManager.services
     {
         private List<Product> productsList;
 
-        public InventoryService()
+        public InventoryService( List<Product> products)
         {
-            productsList = new List<Product>();
+            productsList = products;
         }
 
 
