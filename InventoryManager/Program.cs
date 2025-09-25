@@ -1,6 +1,7 @@
 ﻿using InventoryManager.models;
 using InventoryManager.services;
 
+
 internal class Program
 {
     private static void Main(string[] args)
@@ -10,21 +11,15 @@ internal class Program
         IFileHandlerService _fileHandlerService = new FileHandlerService();
         List<Product> allProducts = _fileHandlerService.LoadInventory(filePath);
         IIinventoryService _inventoryService = new InventoryService(allProducts);
-       
-
-
 
 
         while (shouldExit != 5)
         {
-            string name;
-            string price;
-            string amount;
             Console.Clear();
             Console.WriteLine("--- Inventory Manager ---");
             Console.WriteLine("-------------------------");
             Console.WriteLine("1.Add Product.");
-            Console.WriteLine("2.Show all the inventory.");
+            Console.WriteLine("2.Show all inventory.");
             Console.WriteLine("3.Update Product");
             Console.WriteLine("4.Delete Product.");
             Console.WriteLine("5.Save and exit.");
@@ -39,36 +34,12 @@ internal class Program
                 {
                     case 1:
 
-
-                        Console.WriteLine("\nPlease enter a name: ");
-                        name = Console.ReadLine();
-
-                        if (string.IsNullOrWhiteSpace(name))
-                        {
-                            Console.WriteLine("Error:Input not valid.");
-                            return;
-                        }
+                        string name = GetStringInput("Please enter a name: ");
+                        decimal price = GetDecimalInput("Please enter a price: ");
+                        int amount = GetIntInput("Please enter an amount: ");
 
 
-                        Console.WriteLine("\nPlease enter a price: ");
-                        price = Console.ReadLine();
-
-                        if (!decimal.TryParse(price, out decimal decimalPrice))
-                        {
-                            Console.WriteLine("Error: Input not valid.");
-                            return;
-
-                        }
-
-                        Console.WriteLine("\nPlease enter an amount.");
-                        amount = Console.ReadLine();
-                        if (!int.TryParse(amount, out int intAmount))
-                        {
-                            Console.WriteLine("Error: Input not valid.");
-                            return;
-                        }
-
-                        Product addProduct = new Product(name, decimalPrice, intAmount);
+                        Product addProduct = new Product(name, price, amount);
 
                         _inventoryService.AddProduct(addProduct);
                         Console.WriteLine("The product was added successfully.");
@@ -83,73 +54,47 @@ internal class Program
                         Console.ReadKey();
                         break;
                     case 3:
-                        Console.WriteLine("Please enter a product name to modify.");
-                        name = Console.ReadLine();
-                        if (string.IsNullOrWhiteSpace(name))
-                        {
-                            Console.WriteLine("Error: Name can't be empty.");
-                            return;
-                        }
 
-                        Product productFound = _inventoryService.GetProductByName(name);
+                        string updatename = GetStringInput("Please enter a product name to modify.");
+
+                        Product productFound = _inventoryService.GetProductByName(updatename);
                         if (productFound == null)
                         {
                             Console.WriteLine("Product not found.");
-                            return;
+                            break;
                         }
 
-                        Console.WriteLine("\nPlease enter a price to modify: ");
-                        price = Console.ReadLine();
+                        decimal updatePrice = GetDecimalInput("\nPlease enter a price to modify: ");
 
-                        if (!decimal.TryParse(price, out decimal updatePrice))
-                        {
-                            Console.WriteLine("Error:Input not valid.");
-                            return;
+                        int updateAmount = GetIntInput("\nPlease enter an amount to modify.");
 
-                        }
-
-                        Console.WriteLine("\nPlease enter an amount to modify.");
-                        amount = Console.ReadLine();
-                        if (!int.TryParse(amount, out int updateAmount))
-                        {
-                            Console.WriteLine("Error: Input not valid.");
-                            return;
-                        }
-
-                        _inventoryService.UpdateProduct(name, updatePrice, updateAmount);
-                        Console.WriteLine("The product was  updated successfully.");
+                        _inventoryService.UpdateProduct(updatename,updatePrice,updateAmount);
+                        Console.WriteLine("The product was updated successfully.");
                         Console.ReadKey();
                         break;
                     case 4:
-                        Console.WriteLine("Please enter a product name to delete.");
-                        name = Console.ReadLine();
-                        if (string.IsNullOrWhiteSpace(name))
-                        {
-                            Console.WriteLine("Error: Name can't be empty.");
-                            return;
-                        }
-
-                        Product productDelete = _inventoryService.GetProductByName(name);
+                        string deleteName = GetStringInput("Please enter a product name to delete.");
+                        Product productDelete = _inventoryService.GetProductByName(deleteName);
                         if (productDelete == null)
                         {
                             Console.WriteLine("Product not found.");
-                            return;
+                            break;
                         }
 
-                        _inventoryService.DeleteProductByName(name);
+                        _inventoryService.DeleteProductByName(deleteName);
                         Console.WriteLine("The product was deleted successfully.");
                         Console.ReadKey();
                         break;
                     case 5:
                         List<Product> currentProducts = _inventoryService.GetProducts();
                         _fileHandlerService.SaveInventory(currentProducts, filePath);
-                        Console.WriteLine("Inventory saved.Exiting application.");
+                        Console.WriteLine("Inventory saved. Exiting application.");
                         shouldExit = 5;
                         break;
 
 
                     default:
-                        Console.WriteLine("Invalid option. Please try again");
+                        Console.WriteLine("Invalid option. Please try again.");
                         Console.ReadKey();
                         break;
 
@@ -161,5 +106,55 @@ internal class Program
                 Console.ReadKey();
             }
         }
+
+
     }
+
+    public static decimal GetDecimalInput(string prompt)
+    {
+        decimal result;
+        while (true)
+        {
+            Console.WriteLine(prompt);
+            string input = Console.ReadLine();
+            if (decimal.TryParse(input, out result))
+            {
+                return result;
+            }
+
+            Console.WriteLine("Error: Invalid price.");
+        }
+    }
+
+    public static int GetIntInput(string prompt)
+    {
+        int result;
+        while (true)
+        {
+            Console.WriteLine(prompt);
+            string input = Console.ReadLine();
+            if (int.TryParse(input, out result))
+            {
+                return result;
+            }
+            Console.WriteLine("Error: Invalid amount.");
+        }
+    }
+
+    public static string GetStringInput(string prompt)
+    {
+        string input;
+        do
+        {
+            Console.WriteLine(prompt);
+            input = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                Console.WriteLine("Error: Name can't be empty.");
+            }
+        }
+        while (string.IsNullOrWhiteSpace(input));
+        return input.Trim();
+    }
+
 }

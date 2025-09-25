@@ -2,7 +2,7 @@
 
 namespace InventoryManager.services
 {
-    public class InventoryService : IIinventoryService
+    public class InventoryService : IInventoryService
     {
         private List<Product> productsList;
 

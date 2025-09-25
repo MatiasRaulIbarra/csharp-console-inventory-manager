@@ -2,7 +2,7 @@
 
 namespace InventoryManager.services
 {
-    public interface IIinventoryService
+    public interface IInventoryService
     {
         public void AddProduct(Product product);
         public Product? GetProductByName(string name);
