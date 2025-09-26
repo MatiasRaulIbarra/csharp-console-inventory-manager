@@ -43,7 +43,7 @@ Description: This is a console-based inventory manager developed in C#. It allow
 
 1.  **Clone the repository to your local machine:**
     ```bash
-    git clone [https://aws.amazon.com/es/what-is/repo/](https://aws.amazon.com/es/what-is/repo/)
+    git clone https://github.com/MatiasRaulIbarra/csharp-console-inventory-manager.git
     ```
 
 2.  **Navigate to the main project folder:**
